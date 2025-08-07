@@ -11,15 +11,15 @@ const sanitize = require('sanitize-html');
 
 // Load settings
 try {
-	if (!fs.existsSync('settings.json')) {
-		fs.copySync('settings.example.json', 'settings.json');
+	if (!fs.existsSync(path.join(__dirname, 'settings.json')) {
+		fs.copySync(path.join(__dirname, 'settings.json', 'settings.example.json'));
 		console.log("Created new settings file.");
 	}
 } catch (e) {
 	console.error(e);
 	throw "Could not create new settings file.";
 }
-const settings = require('./settings.json');
+const settings = require(path.join(__dirname, './settings.json');
 
 // Init express
 const app = express();
@@ -40,12 +40,12 @@ const io = socketIO(server);
 exports.io = io;
 
 // Init logger
-const Log = require('./log.js');
+const Log = require(path.join(__dirname, './log.js');
 Log.init();
 const log = Log.log;
 
 // Load ban list
-const Ban = require('./ban.js');
+const Ban = require(path.join(__dirname, './ban.js');
 Ban.init();
 
 // Start listening
@@ -60,10 +60,10 @@ server.listen(port, () => {
 });
 
 // Main logic
-const Utils = require('./utils.js');
-const Meat = require('./meat.js');
+const Utils = require(path.join(__dirname, './utils.js');
+const Meat = require(path.join(__dirname, './meat.js');
 Meat.beat();
 
 // Admin console
-const Console = require('./console.js');
+const Console = require(path.join(__dirname, './console.js');
 Console.listen();
