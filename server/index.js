@@ -41,7 +41,6 @@ if (settings.express.serveStatic)
 	app.use(express.static('../build/www'));
 var server = require('http').createServer(app);
 
-const path = require('path');
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../src/www/index.html'));
 });
