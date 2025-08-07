@@ -57,6 +57,10 @@ if (settings.express?.serveStatic) {
 	app.use(express.static(path.join(__dirname, '../src/www')));
 }
 
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, '../src/www/index.html'));
+});
+
 // Start listening
 const port = process.env.PORT || settings.port || 3000;
 server.listen(port, () => {
