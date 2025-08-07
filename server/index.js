@@ -38,6 +38,12 @@ if (settings.express.serveStatic)
 	app.use(express.static('../build/www'));
 var server = require('http').createServer(app);
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../src/www')));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../src/www/index.html'));
+});
+
 // Init socket.io
 var io = require('socket.io')(server);
 var port = process.env.PORT || settings.port;
