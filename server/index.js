@@ -5,6 +5,9 @@
 // Filesystem reading functions
 const fs = require('fs-extra');
 
+const path = require('path');
+app.use(express.static(path.join(__dirname, '../src/www')));
+
 // Load settings
 try {
 	stats = fs.lstatSync('settings.json');
@@ -39,7 +42,6 @@ if (settings.express.serveStatic)
 var server = require('http').createServer(app);
 
 const path = require('path');
-app.use(express.static(path.join(__dirname, '../src/www')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../src/www/index.html'));
 });
