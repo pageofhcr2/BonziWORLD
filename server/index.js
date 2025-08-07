@@ -53,6 +53,10 @@ const log = Log.log;
 const Ban = require(path.join(__dirname, 'ban.js'));
 Ban.init();
 
+if (settings.express?.serveStatic) {
+	app.use(express.static(path.join(__dirname, '../src/www')));
+}
+
 // Start listening
 const port = process.env.PORT || settings.port || 3000;
 server.listen(port, () => {
