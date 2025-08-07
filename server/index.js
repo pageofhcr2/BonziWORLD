@@ -11,25 +11,30 @@ const sanitize = require('sanitize-html');
 
 // Load settings
 try {
-	if (!fs.existsSync(path.join(__dirname, 'settings.json')) {
-		fs.copySync(path.join(__dirname, 'settings.json', 'settings.example.json'));
+	if (!fs.existsSync(path.join(__dirname, 'settings.json'))) {
+		fs.copySync(
+			path.join(__dirname, 'settings.example.json'),
+			path.join(__dirname, 'settings.json')
+		);
 		console.log("Created new settings file.");
 	}
 } catch (e) {
 	console.error(e);
 	throw "Could not create new settings file.";
 }
-const settings = require(path.join(__dirname, './settings.json');
+
+// Load settings into memory
+const settings = require(path.join(__dirname, 'settings.json'));
 
 // Init express
 const app = express();
 
-// Serve static files
+// Serve static files if enabled in settings
 if (settings.express?.serveStatic) {
-	app.use(express.static(path.join(__dirname, 'src/www')));
+	app.use(express.static(path.join(__dirname, '../src/www')));
 }
 
-// Optional fallback static dir
+// Serve fallback public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Create HTTP server
@@ -40,12 +45,12 @@ const io = socketIO(server);
 exports.io = io;
 
 // Init logger
-const Log = require(path.join(__dirname, './log.js');
+const Log = require(path.join(__dirname, 'log.js'));
 Log.init();
 const log = Log.log;
 
 // Load ban list
-const Ban = require(path.join(__dirname, './ban.js');
+const Ban = require(path.join(__dirname, 'ban.js'));
 Ban.init();
 
 // Start listening
@@ -59,11 +64,11 @@ server.listen(port, () => {
 	);
 });
 
-// Main logic
-const Utils = require(path.join(__dirname, './utils.js');
-const Meat = require(path.join(__dirname, './meat.js');
+// Load main logic and utilities
+const Utils = require(path.join(__dirname, 'utils.js'));
+const Meat = require(path.join(__dirname, 'meat.js'));
 Meat.beat();
 
-// Admin console
-const Console = require(path.join(__dirname, './console.js');
+// Admin console commands
+const Console = require(path.join(__dirname, 'console.js'));
 Console.listen();
