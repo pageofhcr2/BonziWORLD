@@ -1,5 +1,5 @@
 // ========================================================================
-// Server init
+// Server Init
 // ========================================================================
 
 const fs = require('fs-extra');
@@ -10,41 +10,36 @@ const socketIO = require('socket.io');
 const sanitize = require('sanitize-html');
 
 // Load settings
-let stats;
 try {
-	stats = fs.lstatSync('settings.json');
-} catch (e) {
-	if (e.code === "ENOENT") {
-		try {
-			fs.copySync('settings.example.json', 'settings.json');
-			console.log("Created new settings file.");
-		} catch (e) {
-			console.log(e);
-			throw "Could not create new settings file.";
-		}
-	} else {
-		console.log(e);
-		throw "Could not read 'settings.json'.";
+	if (!fs.existsSync('settings.json')) {
+		fs.copySync('settings.example.json', 'settings.json');
+		console.log("Created new settings file.");
 	}
+} catch (e) {
+	console.error(e);
+	throw "Could not create new settings file.";
 }
-const settings = require("./settings.json");
+const settings = require('./settings.json');
 
 // Init express
 const app = express();
 
-// Serve static files (adjust path as needed)
-if (settings.express.serveStatic) {
-	app.use(express.static(path.join(__dirname, '../src/www')));
+// Serve static files
+if (settings.express?.serveStatic) {
+	app.use(express.static(path.join(__dirname, 'src/www')));
 }
 
-// Create server
+// Optional fallback static dir
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Create HTTP server
 const server = http.createServer(app);
 
 // Init Socket.IO
 const io = socketIO(server);
 exports.io = io;
 
-// Init winston logging
+// Init logger
 const Log = require('./log.js');
 Log.init();
 const log = Log.log;
@@ -55,7 +50,7 @@ Ban.init();
 
 // Start listening
 const port = process.env.PORT || settings.port || 3000;
-server.listen(port, function () {
+server.listen(port, () => {
 	console.log(
 		" Welcome to BonziWORLD!\n",
 		"Time to meme!\n",
@@ -64,13 +59,11 @@ server.listen(port, function () {
 	);
 });
 
-// Serve fallback static (optional, for public assets)
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Other modules
-const Utils = require("./utils.js");
-const Meat = require("./meat.js");
+// Main logic
+const Utils = require('./utils.js');
+const Meat = require('./meat.js');
 Meat.beat();
 
+// Admin console
 const Console = require('./console.js');
 Console.listen();
